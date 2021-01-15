@@ -44,7 +44,7 @@
 \maketitle
 
 \begin{abstract}
-本报告为同济大学软件学院计算机网络实验报告，实验指导老师为金伟祖老师，作者为沈天宇。实验内容包括进程运行原理实验，网络端地址实验，网络线的制作和测试实验，ISO基本操作实验，UDP协议网络编程实验，TCP应用协议编程实验，端口扫描实验，物理地址解析实验，异步串联通信收发实验，主机路由实验，以太网组网实验，VLAN配置实验，虚拟无线网络实验，静态路由配置实验，蓝牙通信实验，RIP动态路由实验，OSPF动态路由实验，帧中继配置实验，以太网帧分析实验，组播实验，动态IP地址分配DHCP实验，ACL访问控制实验，邮件收发实验，IP数据包分析实验，UDP用户数据报分析实验，NAT网络地址转换实验，网络管理实验，自选型综合实验。有部分实验（比如端口扫描实验）并没有在课堂上做过但仍出现在了列表中，所以是在写报告的时候补充的。
+本报告为同济大学软件学院计算机网络实验报告，实验指导老师为金伟祖老师，作者为沈天宇。实验内容包括进程运行原理实验，网络端地址实验，网络线的制作和测试实验，ISO基本操作实验，UDP协议网络编程实验，TCP应用协议编程实验，端口扫描实验，物理地址解析实验，异步串联通信收发实验，主机路由实验，以太网组网实验，VLAN配置实验，虚拟无线网络实验，静态路由配置实验，蓝牙通信实验，RIP动态路由实验，OSPF动态路由实验，帧中继配置实验，以太网帧分析实验，组播实验，动态IP地址分配DHCP实验，ACL访问控制实验，邮件收发实验，IP数据包分析实验，UDP用户数据报分析实验，NAT网络地址转换实验，网络管理实验，个人文献阅读，自选型综合实验。有部分实验（比如端口扫描实验）并没有在课堂上做过但仍出现在了列表中，所以是在写报告的时候补充的。
 
 \end{abstract}
 \tableofcontents
@@ -59,12 +59,13 @@
 \subsection{实验设备}
 实验由一台安装Windows 10企业版操作系统的计算机担当，使用其任务管理器软件实 施进程管理实验,也可以使用其他操作系统作为操作平台。
 \subsection{实验内容}
-(1) 打开任务管理器。同时按"Ctrl" + "Alt" + "Delete"显示任务管理器详细信息, 显示进程运行状态信息，如图\ref{fig:screenshot001}所示。
+(1) 打开任务管理器。同时按"Ctrl" + "Alt" + "Delete"显示任务管理器详细信息, 显示进程运行状态信息，如图\ref{fig:renwu}所示。
+
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\linewidth]{screenshot001.jpg}
 	\caption{进程运行状态信息}
-	\label{fig:screenshot001}
+	\label{fig:renwu}
 \end{figure}
 右边第一列是程序名，第二列PID列出的就是当前所有已运行程序的进程号，没有看到 命令行窗口程序(cmd)进程。
 
@@ -341,7 +342,7 @@ UdpClient的接收区显示"hello"；左下角是UdpServer控制台，显示UdpS
 
 
 \subsection{实验小结}
-实验代码金老师已经帮我们写好了，所以我们很快做完了实验，但是关键是要领会试验运行的原理，而不是只关注实验运行的结果。
+（这个实验上课好像没有讲）实验代码金老师已经帮我们写好了，所以我们很快做完了实验，但是关键是要领会试验运行的原理，而不是只关注实验运行的结果。
 
 \section{TCP应用协议编程实验}
 \subsection{实验目的}
@@ -395,20 +396,162 @@ TCP是使用最为广泛的传输层协议，绝大多数的网络应用服务�
 (4)	使用服务管理对端口进行管理。
 
 \subsection{实验设备}
+
+主机需要安装nmap软件。两台计算机和一台交换机担当实验设备，使用两根以太网络线，将两台计算机网卡和交换机连接起来，构成一个子网。主机Hostl作为端口扫描操作平台，另一台主机Host2作为扫描的目标平台，可以是任何一种操作系统，目标主机安装 Windows。在操作平台上使用端口扫描工具软件对目标主机进行扫描。实验使用Windows版本nmap作为端口扫描工具软件,nmap是一款开源的软件，需要下载安装。
+
 \subsection{实验网络拓扑}
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot009}
+	\caption{端口扫描网络拓扑}
+	\label{fig:screenshot009}
+\end{figure}
+
 \subsection{实验内容}
+
+\subsubsection{实验一：远程子网扫描实验}
+
+（1）	配置主机Hostl和Host2地址，主机网卡IP地址设置如下: 
+
+Hostl：IP 地址= 192. 168.1.254,子网掩码=255.255.255.0,网关= 192.168.1.1
+
+Host2：IP 地址= 192. 168. 1.100,子网掩码= 255.255.255.0,网关= 192.168.1.1
+
+（2）	使用nmap扫描软件远程扫描指定子网。对192.168.1.0/24子网进行扫描。
+
+1.Hostl 上启动 nmap。
+
+左击“开始”->“所有程序”->“Nmap”->“Nmap-Zenmap GUI”。
+
+2.扫描192. 168. 1.0/24子网。
+
+输入“目标= 192. 168. 1. * ”，配置=Intense scan->“扫描”，注意扫描要持续一段时间，请保持耐心，在左边会依次列出被扫描的主机IP地址。
+
+3.査看目标主机的端口开放状况。
+
+选择主机192. 168. 1.100,点击“端口/主机”发现了10个开放的端口。
+
+\subsubsection{实验二：端口关闭实验}
+
+如果发现某些端口不用开放，就可以关闭这些端口。实验将关闭目标主机上VM认证服务端口。
+
+(1)进入服务，关闭目标主机上VM认证服务。Host2,右击“开始”->“系统”->“其他管理工具”->“管理工具”->“服务"。
+
+右击 VMware Anthorization Service->“停止”。
+
+(2)重新扫描192.168.1. 100核实。由于nmap是个优秀的软件，所以只要实验网络拓扑没有断开，实验很容易就取得了成功。
+
+实验结果如下图：
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot010}
+	\caption{端口扫描}
+	\label{fig:screenshot010}
+\end{figure}
+
+
 \subsection{实验小结}
-这个实验我记得其实上课金老师没带我们做，是我课后根据实验列表自己补上的。
+这个实验我记得其实上课金老师没带我们做，是我课后根据实验列表自己补上的。实验让我对端口扫描有了一个从感性到理性的认识，开放的网络端口确实比较容易给黑客以可乘之机，这让我想起了臭名昭著的勒索病毒WannaCry，它就是利用了Windows操作系统445端口存在的漏洞。
 \section{物理地址解析实验}
 \subsection{实验目的}
+IP网络不具有实际通信能力，需要将IP数据包封装在物理帧中进行传输，封装前需要对下一跳IP地址进行物理地址解析。物理地址解析是理解IP封装的关键知识点，但物理地址解析行为非常隐蔽，难以察觉。实验利用ARP协议的缓存机制来间接证明物理地址解析行为的发生：
+(1)	理解IP网络和物理网络之间的功能关系。
+(2)	了解ARP地址解析原理。
+(3)	掌握ARPT具软件使用。
+
 \subsection{实验设备}
+
+两台计算机和一台交换机担当实验设备，使用两根以太网络线，将两台计算机网卡都用网 线直接连接交换机。主机Hostl作为地址解析源节点，另一台主机Host2作为地址解析目标节点。使用Windows操作系统自带的ARP工具软件作为实验工具。
+
 \subsection{实验网络拓扑}
+% TODO: \usepackage{graphicx} required
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot011}
+	\caption{实验网络拓扑}
+	\label{fig:screenshot011}
+\end{figure}
+
+
 \subsection{实验内容}
+
+按照实验环境要求，完成实验拓扑结构连接，并打开相关设备电源。
+
+(1)	为Host1和Host2设置IP地址。主机网卡IP地址设置如下：
+
+Host1：IP 地址= 192.168.0.12,子网掩码= 255. 255. 255.0,网关空缺
+
+Host2：IP 地址= 192.168.0.10,子网掩码= 255. 255. 255.0,网关空缺
+
+(2)	Host2触发对Hostl的地址解析。解析如图4-10和图4-11所示。
+
+1.Host2清除ARP缓存表。Host2以管理员身份打开命令行窗口，清除ARP缓存表，以消除有可能存在192. 168. 0.12地址解析条目。
+
+输入：arp-d,清空地址解析缓冲区，以便消除可能已产生的地址解析；
+
+arp -a,显示当前地址解析缓冲区内容，没有出现192. 168.0. 12条目。
+
+2.Host2触发对Host1地址解析，并获得其地址解析缓存。Host2发出ping连通测试命令。
+
+输入“ping 192. 168.0. 12”，测试连通Hostl,触发对192. 168.0. 12的地址解析。
+
+arp-a,显示当前地址解析缓存表内容，岀现了192. 168.0. 12条目，说明在发出连通测试IP数据包前，对192. 168. 0. 12节点的物理地址进行了解析，其解析物理地址是78-36-cc-ee-ab-39。
+
+(3)	核实解析物理地址。Host1打开命令行窗口，核实物理地址。
+
+输入“ipconfig /all”,列出IP地址和物理网卡地址，IP地址是192. 168. 0. 12,物理地址是78-36-cc-ee-ab-39,同Host2解析得到的物理地址完全一致。
+
+实验结果如图\ref{fig:arp} 和图\ref{fig:screenshot012}所示,注意图中红框。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{arp.jpg}
+	\caption{物理地址解析实验}
+	\label{fig:arp}
+\end{figure}
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot012}
+	\caption{物理地址解析实验图2}
+	\label{fig:screenshot012}
+\end{figure}
+
+
 \subsection{实验小结}
+物理地址解析实验也是非常重要的实验，实验本身没什么难度，关键在于理解。物理地址解析是通过广播ARP消息来完成的，相当于向局域网里所有主机发出一个问题：“谁拥有IP地址xxx.xxx.xxx.xxx？”然后拥有这个IP地址的主机就会回应。
+
+
 \section{异步串联通信收发实验}
 \subsection{实验目的}
+数据通信是物理层的核心功能，其基本原理属于通信学范畴。实验利用计算机的COM口进行两台计算机间的字符收发，展示通信基本原理，加深了解物理层作用。
+(1)	理解异步串行通信基本原理。
+(2)	熟悉掌握RS-232通信标准以及RS-232帧格式。
+(3)	了解波特率等主要通信参数的作用和使用。
+
 \subsection{实验设备}
+
+1. 实验环境主要由两台带COM口的计算机，1根串行交叉线组成；
+2. 将单根串行交叉线中间层组成。将单根串行交叉线将两个计算机的COM串口对接起来；
+3. 两台计算机超级终端将作为路由器管理的操作平台。
+
 \subsection{实验网络拓扑}
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot013}
+	\caption{异步串行通信试验网络拓扑}
+	\label{fig:screenshot013}
+\end{figure}
+
+实验环境主要由两台带COM口的计算机，一根串行交叉线组成。将单根串行交叉线将两个计算机的COM串口对接起来；两台计算机超级终端将作为路由器管理的操作平台。
+
 \subsection{实验内容}
 \subsection{实验小结}
 \section{主机路由实验}
@@ -441,12 +584,6 @@ TCP是使用最为广泛的传输层协议，绝大多数的网络应用服务�
 \subsection{实验网络拓扑}
 \subsection{实验内容}
 \subsection{实验小结}
-\section{蓝牙通信实验}
-\subsection{实验目的}
-\subsection{实验设备}
-\subsection{实验网络拓扑}
-\subsection{实验内容}
-\subsection{实验小结}
 \section{RIP动态路由实验}
 \subsection{实验目的}
 \subsection{实验设备}
@@ -460,12 +597,6 @@ TCP是使用最为广泛的传输层协议，绝大多数的网络应用服务�
 \subsection{实验内容}
 \subsection{实验小结}
 \section{帧中继配置实验}
-\subsection{实验目的}
-\subsection{实验设备}
-\subsection{实验网络拓扑}
-\subsection{实验内容}
-\subsection{实验小结}
-\section{以太网帧分析实验}
 \subsection{实验目的}
 \subsection{实验设备}
 \subsection{实验网络拓扑}
@@ -495,6 +626,12 @@ TCP是使用最为广泛的传输层协议，绝大多数的网络应用服务�
 \subsection{实验网络拓扑}
 \subsection{实验内容}
 \subsection{实验小结}
+\section{ARP消息分析实验}
+\subsection{实验目的}
+\subsection{实验设备}
+\subsection{实验网络拓扑}
+\subsection{实验内容}
+\subsection{实验小结}
 \section{IP数据包分析实验}
 \subsection{实验目的}
 \subsection{实验设备}
@@ -513,12 +650,7 @@ TCP是使用最为广泛的传输层协议，绝大多数的网络应用服务�
 \subsection{实验网络拓扑}
 \subsection{实验内容}
 \subsection{实验小结}
-\section{SNMP网络管理实验}
-\subsection{实验目的}
-\subsection{实验设备}
-\subsection{实验网络拓扑}
-\subsection{实验内容}
-\subsection{实验小结}
+\section{个人文献阅读}
 \section{自选型综合实验}
 \subsection{实验目的}
 \subsection{实验设备}
