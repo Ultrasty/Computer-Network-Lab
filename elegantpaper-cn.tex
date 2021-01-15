@@ -40,6 +40,8 @@
 \renewcommand{\headrulewidth}{0.5mm} 
 %页脚线宽，设为0可以去页眉线
 \renewcommand{\footrulewidth}{0.1mm} 
+
+
 \begin{document}
 \maketitle
 
@@ -195,6 +197,7 @@
 
 --断开：HyperTerminal$\rightarrow$断开
 \begin{table}[htbp]
+	\centering
 \begin{tabular}{|l|l|l|l|l|}
 	\hline Command Mode & Access Method & Password & Prompt Displayed & Exit Method \\
 	\hline User Exec 用户 & Log in & Virtual & $>$ & Logout \\
@@ -262,6 +265,8 @@ ISO基本命令
 \end{lstlisting}
 \subsection{实验小结}
 本次实验是ISO路由器基本操作试验，是后面所有实验的基础，因为后面的每次实验都需要通过命令行来操作路由器和交换机。实验内容非常简单，只需要跟着教程做就可以做出来了，本次实验了解了很多ISO操作系统的常用命令，为后面的实验打好了基础。
+
+这段在第一次在服务器上看到的实验清单里有所以我就写了，后来又重发了个实验清单，里面没出现这个实验，因为已经写了所以就没删。
 
 \section{UDP协议网络编程实验}
 \subsection{实验目的}
@@ -342,7 +347,9 @@ UdpClient的接收区显示"hello"；左下角是UdpServer控制台，显示UdpS
 
 
 \subsection{实验小结}
-（这个实验上课好像没有讲）实验代码金老师已经帮我们写好了，所以我们很快做完了实验，但是关键是要领会试验运行的原理，而不是只关注实验运行的结果。
+实验代码金老师已经帮我们写好了，所以我们很快做完了实验，但是关键是要领会试验运行的原理，而不是只关注实验运行的结果。
+
+这段也是在第一次在服务器上看到的实验清单里有所以我就写了，后来又重发了个实验清单，里面没出现这个实验，因为已经写了所以就也没删。
 
 \section{TCP应用协议编程实验}
 \subsection{实验目的}
@@ -376,7 +383,7 @@ TCP是使用最为广泛的传输层协议，绝大多数的网络应用服务�
 \end{figure}
 
 
-% TODO: \usepackage{graphicx} required
+
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\linewidth]{image/screenshot007}
@@ -401,7 +408,7 @@ TCP是使用最为广泛的传输层协议，绝大多数的网络应用服务�
 
 \subsection{实验网络拓扑}
 
-% TODO: \usepackage{graphicx} required
+
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\linewidth]{image/screenshot009}
@@ -445,7 +452,6 @@ Host2：IP 地址= 192. 168. 1.100,子网掩码= 255.255.255.0,网关= 192.168.1
 
 实验结果如下图：
 
-% TODO: \usepackage{graphicx} required
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\linewidth]{image/screenshot010}
@@ -455,7 +461,8 @@ Host2：IP 地址= 192. 168. 1.100,子网掩码= 255.255.255.0,网关= 192.168.1
 
 
 \subsection{实验小结}
-这个实验我记得其实上课金老师没带我们做，是我课后根据实验列表自己补上的。实验让我对端口扫描有了一个从感性到理性的认识，开放的网络端口确实比较容易给黑客以可乘之机，这让我想起了臭名昭著的勒索病毒WannaCry，它就是利用了Windows操作系统445端口存在的漏洞。
+这个实验我记得其实上课金老师没带我们做，因为第一次在服务器上看到的实验清单里有所以我就写了，后来又重发了个实验清单，里面没出现这个实验，因为已经写了所以就没删。实验让我对端口扫描有了一个从感性到理性的认识，开放的网络端口确实比较容易给黑客以可乘之机，这让我想起了臭名昭著的勒索病毒WannaCry，它就是利用了Windows操作系统445端口存在的漏洞。
+
 \section{物理地址解析实验}
 \subsection{实验目的}
 IP网络不具有实际通信能力，需要将IP数据包封装在物理帧中进行传输，封装前需要对下一跳IP地址进行物理地址解析。物理地址解析是理解IP封装的关键知识点，但物理地址解析行为非常隐蔽，难以察觉。实验利用ARP协议的缓存机制来间接证明物理地址解析行为的发生：
@@ -468,7 +475,6 @@ IP网络不具有实际通信能力，需要将IP数据包封装在物理帧中�
 两台计算机和一台交换机担当实验设备，使用两根以太网络线，将两台计算机网卡都用网 线直接连接交换机。主机Hostl作为地址解析源节点，另一台主机Host2作为地址解析目标节点。使用Windows操作系统自带的ARP工具软件作为实验工具。
 
 \subsection{实验网络拓扑}
-% TODO: \usepackage{graphicx} required
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\linewidth]{image/screenshot011}
@@ -537,7 +543,9 @@ arp-a,显示当前地址解析缓存表内容，岀现了192. 168.0. 12条目，
 \subsection{实验设备}
 
 1. 实验环境主要由两台带COM口的计算机，1根串行交叉线组成；
+
 2. 将单根串行交叉线中间层组成。将单根串行交叉线将两个计算机的COM串口对接起来；
+
 3. 两台计算机超级终端将作为路由器管理的操作平台。
 
 \subsection{实验网络拓扑}
@@ -553,34 +561,540 @@ arp-a,显示当前地址解析缓存表内容，岀现了192. 168.0. 12条目，
 实验环境主要由两台带COM口的计算机，一根串行交叉线组成。将单根串行交叉线将两个计算机的COM串口对接起来；两台计算机超级终端将作为路由器管理的操作平台。
 
 \subsection{实验内容}
+
+【准备过程】
+
+1. 按照实验拓扑结构要求将两台计算机的COM口用串口反接连接线连接起来。
+
+2. Host1：运行超级终端，建立串口通信连接test1，设置缺省通信参数。
+
+3. Host2：运行超级终端，建立串口通信连接test2，设置缺省通信参数。
+
+\subsubsection{实验1：测试在相同通信参数下的字符传输}
+
+1. Host2的超级终端输入如下内容，此时Host2超级终端无内容显示
+
+\begin{lstlisting}
+hello !
+\end{lstlisting}
+
+2. Host1的超级终端接收到如下字符串
+
+\begin{lstlisting}
+hello !
+\end{lstlisting}
+
+\subsubsection{实验2：测试采用不同波特率下的字符传输}
+
+1. Host1和Host2均断开连接，在“文件->属性->配置”中修改参数如下：
+\begin{table}[htbp]
+	\centering
+\begin{tabular}{|c|c|c|c|c|}
+	\hline 连接名 & 波特率 & 数据位 & 奇偶校验 & 停止位 \\
+	\hline test1 & 4800 & 8 & 奇校验 & 1 \\
+	\hline test2 & 9600 & 8 & 奇校验 & 1 \\
+	\hline
+\end{tabular}
+\caption{参数}
+\end{table}
+
+2. 进行通信测试。首先在Host1终端从键盘键入以下字符串，Host1屏幕上并不会显示输入内容，
+Host2屏幕上显示乱码。
+
+\begin{lstlisting}
+7788 test
+\end{lstlisting}
+
+3. 在Host2终端从键盘键入以下字符串，Host2屏幕上并不会显示输入内容，Host1屏幕上显示不同乱
+码。
+\begin{lstlisting}
+7788 test
+\end{lstlisting}
 \subsection{实验小结}
+
+在这个实验中主要是加深我们对物理层网络通信的理性认识。实验1中，两台计算机的通信参数相同，波特率匹配，不会发生帧错误，因此字符传输正常。
+
+而实验2中，两台计算机的波特率不同，则它们单位时间内通信信号发生变化的次数不同，相应的信号采样的频率也不一致，因此两台计算机显示出乱码且乱码值也不相同。
+
+这个实验较简单。通过动手操作串口的字符接收和发送，加深了对通信基本原理的理解。在理解通信基本原理和异步串行传输的基础上，进一步掌握RS-232接口标准以及RS-232帧格式，通过实验1和实验2的具体操作切实理解了通信双方必须要保证波特率匹配才能正确通信，明白了波特率的物理含义。
+
+当然实验中也遇到了一些困难，主要是串口松动接触不良造成的。
 \section{主机路由实验}
 \subsection{实验目的}
+
+按照网际网组网原理，IP网络是个多跳网络，两个节点之间的传输将穿越多个IP子网，经过多个路由器，才能到达目标主机，而这一切均有赖于路由机制完成。一般认为，路由是路由器的专利。 实际上，主机上也设置了路由表，只是较为隐蔽。主机路由表是理解主机和路由器建立转发关系的 关键所在。实验构建两个IP子网，利用单路由器实现子网互联，验证主机缺省网关作用。
+
+(1)	深入了解主机路由机制。
+
+(2)	了解和掌握主机路由配置方法。
+
 \subsection{实验设备}
+
+实验环境由一台路由器、两台计算机和一台交换机组成。由交换机担当网络连接设备，将路由器两个以太网端口和两台计算机网卡都用网线直接连接到交换机；通过串行线将主机 Host1串口com同路由器Console口连接起来，启用其超级终端作为路由器管理的操作平台。
+
 \subsection{实验网络拓扑}
+主机路由实验网络拓扑如图\ref{fig:screenshot014}所示。
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot014}
+	\caption{主机路由实验网络拓扑}
+	\label{fig:screenshot014}
+\end{figure}
+
+
 \subsection{实验内容}
+按照实验环境要求，完成实验拓扑结构连接，并打开相关设备电源。
+
+\subsubsection{实验一：主机路由实验}
+
+(1)	配置主机Host1和Host2地址，并测试子网连通性。
+
+1.配置Host1和Host2地址。主机网卡IP地址设置如下:
+
+Host1： IP 地址= 192. 168. 1. 254,子网掩码= 255. 255. 255. 0,网关=192. 168. 1. 1
+
+Host2：IP 地址= 192. 168. 3. 254,子网掩码= 255. 255. 255.0,网关= 192. 168. 3. 1
+
+2.测试子网连通性。Host1打开命令行窗口。
+
+输入“ping 192. 168. 3. 254”，没有连通，原因是Host1和Host2的网络地址不同，网关地址虽设置了，但网关节点并不存在，设置无法起作用。
+
+3.查看主机Host1主机路由表。Host1使用命令行窗口。
+
+输入"Route print",可以看到缺省路由（0.0.0.0    0.0.0.0）是 192.168. 1. 10
+
+（2）配置RouterA以设置子网网关。启用超级终端，配置路由器两个以太网端口分别成为两个子网的网关。
+
+\begin{lstlisting}
+1. 进入配置模式。
+进入特权模式:routerA>en, Enable Secret Password = cisco
+进入配置模式:routerA# config t
+2. 192.168.1.0/24网关配置。
+进入g0/0以太网端口配置模式:routerA(config) # int g0/0
+设置 IP 地址:router A (config-if) # ip address 192. 168. 1. 1 255. 255. 255. 0
+开启端口:routerA( config-if) # no shut
+退出端口配置模式，使端口配置生效:routerA(config-if) # exit
+3. 192.168.3.0/24网关配置。
+进入g0/l以太网端口配置模式:routerA(config) # in g0/l
+设置 IP 地址:routerACcon£ig-if) # ip address 192. 168. 3. 1 255. 255. 255. 0
+开启端口:routerA( config-if) # no shut
+退出端口配置模式，使端口配置生效:routerA(config-if) # exit
+4. 启用路由功能。
+启用路由功能:routerA(config) # ip routing
+退出配置模式，使配置生效:routerACconfig) # exit
+
+\end{lstlisting}
+
+(3)	测试子网连通性。测试主机Host1是否连通主机Host2, Host1中打开命令行窗口,输入"ping 192. 168. 3. 254”，表示Host1已连通主机Host2,主机路由表和主机网关发生作用，发挥了路由器路由转发功能。
+
+\subsubsection{实验二：主机缺省网关实验}
+
+取消主机Host1缺省网关地址，并测试同Host2连通性。
+
+(1)	重置主机Hostl的缺省网关地址。
+
+删除默认网关地址-“确定”。
+
+(2)	测试子网连通性。Hostl打开命令行窗口。
+
+输入“ping 192.168.3.254”，表示不能连通Host2，网关节点存在，但主机的网关地址没有设置，将不能发挥网关节点作用，无法访问其他子网。
+
+
 \subsection{实验小结}
+
+在实验过程中出现了一些问题，例如接上交换机并配置完每台主机的IP和子网掩码后，利用ping进行连通性测试失败，后经检查后发现网线刚接上交换机时交换机对应端口的灯为红色，等待灯变成绿色后可以成功ping通，猜测是因为此段时间交换机在获取主机的IP地址或者MAC地址。
+
+在实验时，用网线将路由器的FE 0/1口和FE 0/0口和交换机相连，路由器和交换机对应端口的灯亮，但是过一会之后路由器上的FE 0/1端口灯灭了，对应的交换机端口上的灯也灭了，我以为是路由器坏了，后来发现，在对路由器进行操作，输入no shut命令开启FE 0/1端口之后灯又亮了，由此我明白了为什么开启端口的命令叫做no shut。在对路由器进行操作的时候碰到的另一个问题是，我根据书上的命令进行输入，输入int g0/0回车，命令行报错，经过排查之后发现我使用的路由器上的端口名称不是g0/0而是 FE 0/0，这可能是因为路由器不是千兆路由器而是百兆路由器，因此我将命令改成了int f0/0，遂成功。
+
+在实验中还遇到了另外的问题是，所有操作均正确，但是主机却ping不通，根据老师的点拨，是因为交换机可能已经划分了多个VLAN，因此更换接线的端口之后成功ping通。
 \section{以太网组网实验}
 \subsection{实验目的}
+
+物理网络是计算机网络的基本组织单元，其各个节点之间可以进行数据通信。物理网络是互联网的基础架构，无论对于理解网络基本原理还是网际互联原理都非常关键。实验利用以太网交换机组成一个独立的双绞线以太网物理网络，实现网络节点之间的互通。
+
+(1)	理解局域网组网原理。
+
+(2)	理解掌握以太网组网步骤。
+
+(3)	了解以太网网络地址格式。
+
 \subsection{实验设备}
+
+两台计算机和一台交换机担当实验设备，使用两根双绞线网线，将两台计算机以太网网卡同交换机连接起来。计算机Host1作为操作平台和测试操作平台，另一台计算机Host2作为测试平台。也可以使用家用无线路由器代替交换机，开展本实验。
+
 \subsection{实验网络拓扑}
+
+如图\ref{fig:screenshot015}所示
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot015}
+	\caption{组网实验实验网络拓扑图}
+	\label{fig:screenshot015}
+\end{figure}
+
 \subsection{实验内容}
+
+\subsubsection{实验一：以太网组网试验}
+
+(1)	用两根双绞线网线分别将两台计算机网卡同交换机端口连接起来，这样就形成了局域网。
+
+(2)	为主机配置IP地址。限于篇幅，请参考1.4. 1小节，主机网卡IP地址设置如下。
+
+Hostl：IP 地址= 192. 168. 0. 12,子网掩码= 255. 255. 255.0
+
+Host2：IP 地址= 192. 168. 0. 10,子网掩码= 255. 255. 255. 0
+
+(3)	Host1测试Host2是否连通。打开Host1命令行窗口。
+
+输入ping命令“ping 192. 168.0. 10”，可以看到连通，由于交换机处理有个延缓过程，命令要多打几次，才能实验成功。
+
+这个地方我印象深刻，交换机上的灯过一会之后会由红变绿，代表可以连通了。
+
+实验截图如下：
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/ping}
+	\caption{ping通了}
+	\label{fig:ping}
+\end{figure}
+
+
+
+\subsubsection{实验二：以太网卡地址查看实验}
+
+Host1査看自身以太网物理地址，打开命令行窗口。
+
+输入命令ipconfig： ipconfig /all,可以看到Host1以太网卡的IP地址和物理地址。
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot016}
+	\caption{查看地址}
+	\label{fig:screenshot016}
+\end{figure}
+
+
 \subsection{实验小结}
+
+这两个实验的内容相当相当的简单，但在当时做实验的时候还是遇到了一点点小问题，例如接上交换机并配置完每台主机的IP和子网掩码后，利用ping进行连通性测试失败，后经检查后发现网线刚接上交换机时交换机对应端口的灯为红色，等待灯变成绿色后可以成功ping通，猜测是因为此段时间交换机在获取主机的IP地址或者MAC地址。
+
+在实验中还遇到了另外的问题是，所有操作均正确，但是主机却ping不通，根据老师的点拨，是因为交换机可能已经划分了多个VLAN，因此更换接线的端口之后成功ping通。
+
 \section{VLAN配置实验}
 \subsection{实验目的}
+
+对于企业而言，可能含有许多部门，为便于管理，常常以部门为单位，构建多个物理子网。 传统网络工程，只有相近的办公室才可以组成同一个物理子网，鉴于种种原因，很可能同个部 门的两个办公室位于不同楼层，甚至不同大楼。
+
+虚拟局域网(Virtual Local Area Network, VLAN),标准编号为IEEE 802.IQ,可以实现 将两个相距较远的办公室组成同一个物理子网。实验利用交换机提供虚拟局域网功能，实现VLAN划分。
+
+(1)	了解虚拟局域网基本概念。
+
+(2)	掌握交换机实施虚拟局域网技术。
+
+
 \subsection{实验设备}
+
+由一台CISCO交换机和两台计算机担当实验设 备，使用两根双绞线网线，将两台计算机以太网网卡同交换机连接起来；通过串行线将计算机Hostl串口 coml同交换机Console 口连接起来，使用超级终端作为交换机的操作平台。
+
+
 \subsection{实验网络拓扑}
+
+如图，我将不同的端口区分了不同的颜色以区分它们，代表不同的VLAN.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot017}
+	\caption{VLAN划分示意图}
+	\label{fig:screenshot017}
+\end{figure}
+
+
 \subsection{实验内容}
+
+\begin{lstlisting}
+1.未配置前端口通信测试
+--配置两主机IP地址：192.168.0.2和192.168.0.5
+--连接任意端口
+--测试192.168.0.2：ping 192.168.0.5#连通
+2配置VLAN2
+2.1连接交换机
+--使用console线将计算机串口com2与路由器console口直接相连；
+--建立HyperTerminal：开始程序附件通讯超级终端名称=switch连接=com2Baut Rate=9600,8,no parity, 1 stop bit；
+--进入特权模式：switch01>en(able) ，Enable Secret Password=cisco
+2.2 2查看VLAN配置：switch01# sh vlan
+2.2.3 建立VLAN2
+--进入vlan配置模式：switch01#vlan database
+--添加vlan： switch01(vlan)#vlan 2 name vlan2 
+--退出：switch01(vlan)#exit
+2.2.3 建立VLAN3
+--进入vlan配置模式：switch01#vlan database
+--添加vlan： switch01(vlan)#vlan 3 name myvlan 
+--退出：switch01(vlan)#exit
+2.2.4 为VLAN2分配端口
+--进入配置模式：switch01#config t
+--进入f0/1端口：switch01(config)#in f0/1
+--将端口分配给vlan2：switch01(config -if)#switchport access vlan 2
+--退出：switch01(config -if)#exit
+--查看VLAN2配置：switch01# sh vlan name vlan2
+2.2.5.测试
+--重新测试192.168.0.2: ping 192.168.0.5 #不连通
+2.2.6 为VLAN2分配新端口
+--进入f0/24端口：switch01(config)#in f0/24
+--将端口分配给vlan2：switch01(config -if)#switchport access vlan 2
+--退出：switch01(config -if)#exit
+--查看VLAN2配置：switch01# sh vlan name vlan2
+2.2.7.测试
+--重新测试192.168.0.2: ping 192.168.0.5 #办连通
+3配置VLAN3
+4 删除VLAN
+4.1 删除端口
+--进入配置模式：switch01#config t
+--进入f0/1端口：switch01(config)#in f0/1
+--将端口返回VLAN1：switch01(config -if)#switchport access vlan 1
+--将所有端口删除
+--退出：switch01(config -if)#exit
+4.2 删除VLAN2
+--进入vlan配置模式：switch01#vlan database
+--添加vlan： switch01(vlan)#no vlan 2
+--退出：switch01(vlan)#exit
+4.3查看VLAN配置：switch01# sh vlan
+4.4 删除VLAN3
+--进入vlan配置模式：switch01#vlan database
+--添加vlan： switch01(vlan)#no vlan 3
+--退出：switch01(vlan)#exit
+
+\end{lstlisting}
+
+实验过程的记录如下，每幅图的含义已经写在每幅图片的下方：
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/vlan1}
+	\caption{为端口指定VLAN}
+	\label{fig:vlan1}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/vlan2}
+	\caption{查看已经划分的端口}
+	\label{fig:vlan2}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/vlan3}
+	\caption{删除VLAN以及添加VLAN}
+	\label{fig:vlan3}
+\end{figure}
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/在不同vlan无法访问，在相同vlan可以访问}
+	\caption{在不同vlan无法访问，在相同vlan可以访问}
+	\label{fig:vlanvlan}
+\end{figure}
+
+
+
 \subsection{实验小结}
+
+VLAN实验可以算是非常实用的实验了，因为为了局域网的安全，给网络划分不同的区域非常重要。计网实验指定很多，使用也比较复杂，必须静下心来仔细核对，否则就比较容易出错。另外实验室的设备也有时候会出一点问题导致实验进度受到阻碍。
+
+尚未配置VLAN前，VLAN1拥有所有端口，1个VLAN即1个广播域，在同广播域下的192.168.0.10与192.168.0.12可以连通。但如果在不同的VLAN中就无法连通了。
+
+\subsubsection{经验教训}
+
+配置完之后检查一下VLAN分配情况看看是不是你想的那样，而且前面的同学留下来的配置也可能干扰你做实验。
+
 \section{虚拟无线网络实验}
 \subsection{实验目的}
+
+无线组网技术是计算机网络组网技术中发展最为迅速的技术，由于无线网络具有的可移动性，发展前景非常广阔，但无线组网技术实验教学却受环境制约因素较大，无论设备数量还是拓扑结构，在现有实验条件下均受到极大限制。
+
+在经过本实验之后，可以对NS3这一平台有更深入的理解。
+
+
 \subsection{实验设备}
-\subsection{实验网络拓扑}
+一台安装了VMware的电脑，其中安装Ubuntu 16.04，并配置好NS3的环境。
+
 \subsection{实验内容}
+
+本实验包括两个部分。
+
+\subsubsection{1.无线局域网络隐藏节点实验}
+
+【实验目标】
+
+对无线网络的传输机制有一个直观的了解，加深对CSMA/CA协议的理解。该实验项目中可以随意调整节点的位置，并通过分析实验产生数据结果，来获得最终的实验结论。可以培养初步的观察力和分析能力，形成最基本的研究能力。
+
+【实验原理】
+
+无线局域网络Wireless LANs，简称Wi-Fi，标准版本号是802.11，从此版本又发展了多个子版本，比如熟知的802.11g。但其传输机制是完全一致，所有节点都采用了同频率载波，采用了Carrier Sense On Multi-Access/ Collision Avoid (CSMA/CA)，即多路存取载波监听/避免碰撞机制，类似总线的共享发送模式，即任意时刻只有一个节点才能发送。
+多路存取载波监听机制，根据监听通道传输状态以决定是否可以发送。
+
+1、当节点需要发送数据时，进行载波监听。载波是网络上的传输信号。
+
+2、如果节点在网络上监听到载波，说明其他节点在发送，那只能耐心等待，返回1。
+
+3、如果没有监听到载波，就能直接往网上发送帧，用不着通知其他节点。这是没有节点在传输数据。
+
+多路存取载波监听机制建立在所有节点都能监听其他任意节点的载波基础上，但在无线网络中，由于其可移动性，会发生隐藏节点问题。
+
+隐藏节点是指在接收节点的覆盖范围内而在发送节点的覆盖范围外的节点。由于听不到发送节点的发送，隐藏节点可能向相同的接收节点发送分组，导致分组在接收节点处冲突。隐藏节点可以分为隐发送节点和隐接收节点。
+
+A和C就互为隐藏节点。节点A和C同时想发送数据给节点B，但A和C都不在对方的传送范围内。所以当A发送数据给B时，C并未检测到A也在发送数据，会认为目前网络中无数据传送，会将数据发送给B。这样，A和C同时将数据发送给B，使得数据在B处产生冲突，最终导致发送的数据不可用。这种因传送距离而发生误判的问题称为隐藏节点问题。
+
+解决隐藏节点的思路是使接收节点周围的邻居节点都能了解到正在进行的传输。RTS/CTS方式是解决隐藏节点问题的主要方法之一，发送节点在数据发送前与接收节点进行一次短控制消息握手交换，请求发送(Request to Send，RTS)和清除发送(Clear to Send，CTS)的控制信息来避免冲突。
+
+发送方发出数据前，先送出一个RTS包，告知在传送范围内的所有节点不要有任何传送操作。如果接收方目前空闲，则响应一个CTS包，告诉发送方可开始发送数据，此CTS包就会告知所有在接收方信号传输范围内的其它节点不要进行任何传输操作。
+
+【实验内容】
+
+隐藏节点实验主要是揭示无线节点传输过程中可能发生的冲突以及解决的过程。实验设置了两个发送节点和一个接收节点，实验中需要控制的是节点之间的距离可以自由调整，RTS/CTS控制可以启用或不启用，然后观察数据包丢失现象来获得实验结论。实验场景如下：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot019}
+	\caption{实验场景}
+	\label{fig:screenshot019}
+\end{figure}
+
+【实验过程】
+
+虚拟实验由wifi-hidden-stations.cc实现。具体步骤：
+
+1、编译wifi-hidden-stations.cc。
+
+1)复制wifi-hidden-stations.cc到NS\_HOME/scratch
+
+2)编译wifi-hidden-stations.cc：./waf –run scratch/wifi-hidden-stations.cc
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.9\linewidth]{image/screenshot018}
+	\caption{编译并运行wifi-hidden-stations.cc}
+	\label{fig:screenshot018}
+\end{figure}
+
+2、运行目标代码。
+
+1)将目录移动到NS\_HOME/scratch/build
+
+2)运行目标代码：./ wifi-hidden-stations.cc
+
+3、显示运行动画
+
+1)将目录移动到执行目录netanim
+
+2)启动netanim动画工具程序：./NetAnim
+
+3)显示运行动画。打开wifi-hidden-stations.xml
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.9\linewidth]{image/screenshot020}
+	\caption{运行画面}
+	\label{fig:screenshot020}
+\end{figure}
+
+【实验小结】
+
+通过本次实验以及源码阅读我初步知道了如何编写一个ns3脚本来模拟一个预设的网络场景，掌握了科学研究的工具是进行科学研究的第一步。
+
+隐藏节点的问题是计算机网络中经常被拿来讨论的问题，可是只有亲自写过代码清楚其中的逻辑才能完全掌握它。
+
+\subsubsection{2.移动自组网络manet实验}
+
+【实验目标】
+
+实验目标，主要是对移动自组网络的传输机制有一个直观的了解，加深对中间节点路由协议原理的理解，培养学生的初步的观察力和分析能力，形成最基本的研究能力。
+
+【实验原理】
+
+自组网络实验主要是揭示其典型的传输过程。工程上，经常将数据发送节点，称为源(source)节点，主要用于采集数据，接收节点，称为汇聚(sink)节点，将收集到的数据统一发送给数据中心。实验将使用50个节点，其位置随机确定的，其中，确定1个汇聚节点和10个源节点，源节点将同时向汇聚节点发送数据，不能直接传输到达的数据，将由其他中间节点进行路由，实验允许采用OLSR、AODV、DSDV和DSR路由协议，缺省采用AODV路由协议。通过观察数据包传输来理解自组网络运行机制。
+
+AODV无线自组织按需距离矢量协议. 当一个节点需要给网络中的其他节点传送信息时，如果没有到达目标节点的路由，则必须先以组播的形式发出RREQ(路由请求)报文。RREQ报文中记录着发起节点和目标节点的网络层地址，邻近节点收到RREQ，首先判断目标节点是否为自己。如果是，则向发起节点发送RREP(路由回应);如果不是，则首先在路由表中查找是否有到达目标节点的路由，如果有，则向源节点单播RREP，否则继续转发RREQ进行查找。
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\linewidth]{image/screenshot023}
+	\caption{实验界面示意}
+	\label{fig:screenshot023}
+\end{figure}
+
+
+
+【实验内容】
+
+虚拟实验由manet-routing.cc实现。具体步骤：
+
+1、编译manet-routing..cc。
+
+1)复制manet-routing.cc到NS\_HOME/scratch
+
+2)编译manet-routing.cc：./waf –run scratch/ manet-routing.cc
+
+2、运行目标代码。
+
+1)将目录移动到NS\_HOME/scratch/build
+
+2)运行目标代码：./ manet-routing.cc
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\linewidth]{image/screenshot021}
+	\caption{编译并运行manet-routing.cc}
+	\label{fig:screenshot021}
+\end{figure}
+
+
+3、显示运行动画
+
+1)将目录移动到执行目录netanim
+
+2)启动netanim动画工具程序：./NetAnim
+
+3)显示运行动画。打开manet-routing.xml
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.9\linewidth]{image/screenshot022}
+	\caption{显示运行动画}
+	\label{fig:screenshot022}
+\end{figure}
+
+
+【实验小结】
+
+无线自组织网络有非常多的应用情形，这个简单的，非常经典的demo带我入门，领略了ns3的强大之处。
+
 \subsection{实验小结}
+
+通过本次虚拟无线网络实验，初步了解了ns3的使用方法和它的强大之处，也为后续做NS3自选实验做好了铺垫。
+
+第二个实验我特别关注了，在现实中，有很多关于无线自组织网络的研究，例如在本次的自选实验中，我们曾关注过一篇车用自组织网络（VANETs），其中详细介绍了车用自组织网络的工作方法，还基于NS3研究了车用自组织网络的路由协议的性能。较之一般的Ad hoc网络，VANETs的动态特性更为明显。VANETs当中的汽车节点移动速度更快、拓扑变化更频繁、路径寿命更短。同时，VANETs当中的汽车节点移动模型比较复杂，车辆节点密度不均匀等特点也给VANETs的研究工作带来了极大的困难。
+
 \section{静态路由配置实验}
 \subsection{实验目的}
+
+静态路由，是指由人工根据网络拓扑结构来创建路由表。路由器需要依靠路由表来转发 IP数据包，该实验是路由器实验中最基础的实验，后续的几个实验都以静态路由为基础。静态路由也是理解路由原理最直观的途径。实验模仿两个远程子网的互联，两个子网在本地各 接一个路由器，路由器之间用远程网络相连，使用静态路由实现远程子网互联。
+
+(1)	深入了解IP路由基本原理。
+
+(2)	了解和掌握配置静态路由配置方法。
+
 \subsection{实验设备}
+
+
 \subsection{实验网络拓扑}
 \subsection{实验内容}
 \subsection{实验小结}
