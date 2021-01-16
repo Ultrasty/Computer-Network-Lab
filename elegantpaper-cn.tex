@@ -1295,7 +1295,7 @@ router01(config-router)# network 202.168.2.0
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.7\linewidth]{image/screenshot024}
-	\caption{OSPF动态路由实验实验网络拓扑}
+	\caption{OSPF动态路由实验网络拓扑}
 	\label{fig:screenshot024-3}
 \end{figure}
 
@@ -1660,36 +1660,622 @@ DHCP实验是非常简单的实验了，在实验过程中没有遇到问题，�
 
 (3)	利用控制列表实施网络安全。
 
+(4)	掌握访问控制组配置。
+
+(5)	实施包过滤，有选择地允许某些地址组进行网际通信。
+
 \subsection{实验设备}
+
+实验环境主要由两台路由器、两台计算机和一台交换机组成。使用单根串行交叉线将两个路由器的串口对接起来;将路由器以太网端口和两台计算机网卡都用网线直接连接到交换机，由交换机担当网络连接;通过串行线将计算机串口com同路由器console口连接起来，两台计算机超级终端作为路由器管理的操作平台。
+
 \subsection{实验网络拓扑}
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot024}
+	\caption{ACL访问控制列表实验网络拓扑}
+	\label{fig:acl}
+\end{figure}
+
 \subsection{实验内容}
+
+\subsubsection{一、连接路由器}
+
+--打开路由器电源
+
+--使用console线将计算机串口com1与路由器console口直接相连；
+
+--建立HyperTerminal：开始程序附件通讯超级终端名称=router连接=com1Baut Rate=9600,8,no parity, 1 stop bit；
+
+--进入特权模式：router01>en(able) ，Enable Secret Password=cisco
+
+\subsubsection{二、静态路由配置}
+
+2.1 配置快速以太f0/0
+
+--进入配置模式：router01\#config t
+
+--进入以太口：router01(config)\#in f0/0
+
+--删除旧IP地址： router01(config-if)\#no ip address <ipaddress><subnet mask>
+
+--添加IP地址： router01(config-if)\#ip address <ipaddress><subnet mask>
+
+--开启端口功能：router01(config-if)\#no shut
+
+2.2配置串口s0/0
+
+--退到配置模式：router01(config-if)\#exit
+
+--进入串口：router01(config)\#in s0/0
+
+--添加IP地址： router01(config-if)\#ip address <ipaddress><subnet mask>
+
+--开启端口功能：router01(config-if)\#no shut
+
+2.3 静态缺省路由
+
+--添加对端路由： router01(config)\#ip route 0.0.0.0 0.0.0.0 202.168.1.z \# 对端网络地址和广域端口地址；
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot030}
+	\caption{router01的路由表}
+	\label{fig:screenshot030}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot031}
+	\caption{router02的路由表}
+	\label{fig:screenshot031}
+\end{figure}
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot032}
+	\caption{host测试，用ping连通192.168.2.15，成功连通}
+	\label{fig:screenshot032}
+\end{figure}
+
+
+\subsubsection{三、访问控制组，只允许内部地址外出}
+
+4.只允许内部地址外出permit：192.168.1.0/28
+
+--192.168.x.15可以外出；
+
+--192.168.x.17不可以外出；
+
+4.1 建立访问控制组
+
+--进入配置模式：router01\#config t
+
+--建立访问控制组1：router01(config)\# access-list 1 permit 192.168.x.0  0.0.0.15
+
+--查看访问控制组：router01\# sh access-list
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot033}
+	\caption{router01的访问控制组}
+	\label{fig:screenshot033}
+\end{figure}
+
+
+4.2实施包过滤1
+
+--指定以太端口：router01\# config t
+
+router01(config)\#in f0/0
+
+--建立映射：router01(config)\# ip access-group 1 in 
+
+--查看包过滤：router01\# sh run
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot034}
+	\caption{查看包过滤}
+	\label{fig:screenshot034}
+\end{figure}
+
+
+4.3 host测试(DOS窗口)
+
+--测试连通(从计算机)：ping 192.168.y.1\# 对端路由器，成功
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot035}
+	\caption{第一次测试}
+	\label{fig:screenshot035}
+\end{figure}
+
+
+--修改计算机IP地址：192.168.x.17
+
+--测试连通(从计算机)：ping 192.168.y.1\# 对端路由器，不成功
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot036}
+	\caption{修改IP为192.168.1.17后，第二次测试}
+	\label{fig:screenshot036}
+\end{figure}
+
+
+4.4实施包过滤2
+
+--指定实施端口：router01\# config t
+
+router01(config)\#in f0/0
+
+--删除映射：router01(config)\# no ip access-group 1 in 
+
+--查看包过滤：router01\# sh run
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot037}
+	\caption{删除映射后查看包过滤}
+	\label{fig:screenshot037}
+\end{figure}
+
+
+--指定串行端口：router01\# config t
+
+router01(config)\#in s0/0
+
+--建立映射：router01(config)\# ip access-group 1 out
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot038}
+	\caption{建立映射后查看包过滤}
+	\label{fig:screenshot038}
+\end{figure}
+
+\subsubsection{四、访问控制组，只允许外部地址进入}
+
+5(可选)只允许外部地址进入permit：192.168.y.0/28
+
+--192.168.2.15可以进入；
+
+--192.168.2.17不可以进入；
+
+5.1 建立访问控制组
+
+--进入配置模式：router01\#config t
+
+--建立访问控制组1：router01(config)\# access-list 2 permit 192.168.2.0  0.0.0.15 
+
+--查看访问控制组router01\#sh access-list
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot039}
+	\caption{router01的访问控制组}
+	\label{fig:screenshot039}
+\end{figure}
+
+
+5.2实施包过滤
+
+--实施端口：router01\# config t
+
+router01(config)\#in s0/0
+
+--建立映射：router01(config)\# ip access-group 2 in 
+
+--查看包过滤：router01\# sh run
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot040}
+	\caption{查看包过滤}
+	\label{fig:screenshot040}
+\end{figure}
+
+
+5.3 测试
+
+--配置对端计算机IP地址：192.168.x.17
+
+--测试连通(从对端计算机)：ping 192.168.y.1\# 对端路由器，成功
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot041}
+	\caption{第一次测试，成功}
+	\label{fig:screenshot041}
+\end{figure}
+
+--测试连通(从对端计算机)：ping 192.168.y.17\# 对端路由器，不成功
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot042}
+	\caption{第二次测试，不成功}
+	\label{fig:screenshot042}
+\end{figure}
+
+
+6 查看
+
+--查看运行状态： router01\# show run
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot043}
+	\caption{查看运行状态}
+	\label{fig:screenshot043}
+\end{figure}
+
+--查看访问控制组： router01\# show access-list 1
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot044}
+	\caption{查看访问控制组}
+	\label{fig:screenshot044}
+\end{figure}
+
+
+router01\# show access-list 2
+
+--删除： router01(config) no access-list 1
+
+--测试连通(从计算机)：ping 192.168.y.254\# 对端计算机
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot045}
+	\caption{测试：成功}
+	\label{fig:screenshot045}
+\end{figure}
+
+
+
 \subsection{实验小结}
 
 我们都知道我国的防火长城就是由ACL访问控制列表来实现的，所以访问在ACL访问控制列表中的站点的时候需要使用代理服务器。通过这次实验我加深了对访问控制的具体流程的理解，对计算机网络也更感兴趣了。
+
+有前面的很多实验做基础，我已经对连线和路由器、交换机配置等基本操作都很熟悉，实验顺畅的进行。ACL控制访问列表实验是个基于静态路由配置的实验，其网络拓扑结构与前面的很多实验完全相同。通过本次实验掌握了访问控制组的相关配置指令，认识了路由器包过滤机制，也更加深了对网络安全的理解。
+
 \section{邮件收发实验}
 \subsection{实验目的}
+
+电子邮件是目前人们工作和个人进行沟通交流的主要渠道，已成为人们生活和工作的重 要组成部分，也是互联网应用最广的服务之一。了解电子邮件原理，可以更有效地开展邮件应 用。实验通过安装邮件服务器，创建一个邮件应用环境，然后使用Telnet工具，使用命令行操 作进行简单邮件的收发。
+
+(1)	了解应用层数据规范和交互命令基本组成。
+
+(2)	了解电子邮件运行的基本模型。
+
+(3)	了解邮件服务器基本安装和管理步骤。
+
+(4)	了解邮件发送交互方式，熟悉SMTP协议消息。
+
+(5)	了解邮件接收交互方式，熟悉POP协议消息。
+
 \subsection{实验设备}
-\subsection{实验网络拓扑}
+
+使用一台计算机作为实验运行平台，实验环境主要由软件环境担当。
+
+(1)	启动包含SMTP和POP服务器的邮件服务器，并开设实验邮件账号供实验使用；
+
+(2)	创建networklab. com作为邮箱服务器伪域名；
+
+(3)	使用Telnet T具软件作为客户机，分别访问SMTP服务器和POP服务器，进行邮件 的发送和接收。
+
 \subsection{实验内容}
+
+\subsubsection{实验一:SMTP邮件发送实验}
+(1)启动hMailServer服务。打开系统服务管理，“开始”->“系统”->“其他管理工具”-> “管理工具”->“服务”。
+如果hMailServer还没启动，右击hMailServer->“启动”。
+
+(2)使用Telnet发送邮件。
+
+1.进入Telnet命令。打开命令行窗口。
+
+输入“telnet",进入Telnet交互模式。
+
+2.连接SMTP服务器，端口号是25
+
+输入"open networklab. com 25"。
+
+3.向邮箱student1@networklab. com发送邮件消息。使用SMTP消息向邮箱student1 @networklab. com发送邮件，具体消息含义参见SMTP消息介绍，数字开头是服务器的响应状态码。
+
+标识发件人身份，HELO networklab. com
+
+指定发件人邮箱，MAIL FROM：jinweizu@163. com
+
+指定收件人邮箱 JRCPT TO：student1@networklab. com
+
+输入信件主体：
+
+DATA
+
+Subject: test SMTP.
+
+结束信件输入：<cr><LF>. <cr><LF>,使用<回车>.<回车>
+
+结束连接：QUIT。
+
+\subsubsection{实验二:POP邮件接收实验}
+
+（1）使用Telnet接收邮件。
+
+1.连接POP服务器，端口号是110
+
+open networklab. com 110
+
+2.接收实验一发送的邮件。通过发送POP消息，接收实验一发送的邮件,数字开头是服务器的响应状态码。
+
+输入邮件账号和口令：
+
+USER studentl©networklab. com
+
+PASS password 
+
+查看当前信件列表:LIST
+
+阅读编号为1的信件内容:RETR1,可以看到实验一发送的邮件内容,邮件成功接收。 结束连接：QUIT。
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.9\linewidth]{"image/reveive email"}
+	\caption{实验截图：成功收到邮件并阅读邮件内容！}
+	\label{fig:reveive-email}
+\end{figure}
+
+
 \subsection{实验小结}
+
+邮件收发实验是我认为最好玩的一个应用层协议的实验之一，为此我还在阿里云注册了一个域名imsty.cn并按照与书上相似的方法配置了一个邮件服务器，并成功与我的QQ邮箱进行了邮件发送与接收。
+
+当然在实验中我还遇到了一些困难，比如在我连接smtp服务器的25端口的时候有时候会拒绝连接，后来经过自己查看hMailServer的设置之后发现是如果多次输错密码hMailServer会把那个IP加入黑名单并持续一段时间，在我关闭掉这个设置之后实验成功进行。
+
+在课外我还注册了一个域名，配置了一个邮件服务器，并能成功做到和我的QQ邮箱收发邮件，下面是一些截图。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\linewidth]{image/screenshot046}
+	\caption{发送成功}
+	\label{fig:screenshot046}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\linewidth]{image/screenshot047}
+	\caption{接收成功}
+	\label{fig:screenshot047}
+\end{figure}
+
+
+
 \section{ARP消息分析实验}
 \subsection{实验目的}
+
+IP数据包在封装到以太网帧之前，需要获得下一跳IP地址的物理网络地址，TCP/IP协议使用ARP协议帮助进行IP地址解析,ARP协议是网际层协议，作为联结IP协议和网络接口层的纽带，起着承上启下作用。本实验借助Tcpdump工具，捕获和分析ARP消息。
+
+(1)	了解和掌握ARP消息结构。
+
+(2)	理解ARP解析原理。
+
+\subsection{ARP消息封装}
+
+ARP消息是直接封装在物理帧中进行传输的。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot048}
+	\caption{ARP消息封装}
+	\label{fig:screenshot048}
+\end{figure}
+
+
 \subsection{实验设备}
-\subsection{实验网络拓扑}
+
+一台安装了Ubuntu16.04虚拟机的计算机。
+
+
 \subsection{实验内容}
+
+1.启动捕获ARP消息监听
+
+创建终端1,请参照1.4.2小节，进入捕获ARP消息监听状态。
+
+
+输入捕获ARP消息监听命令:sudo tcpdump -exp -i enp0s3 arp 用户口令：123456789,处于监听状态。
+
+2,触发产生ARP消息
+
+创建终端2,利用ping测试Windows节点连通，以触发ARP协议，如图7-11。
+
+输入ping命令“ping 192.168.1. 254”，非首次访问，请先执行arp-d,清除ARP缓存表。
+
+3.	捕获和分析ARP消息
+
+物理帧头部的第一个矩形框标注了帧类型,ethertypeARP(0x0806),代表封装的是ARP消息。
+
+ARP消息格式分成七行，共计28个字节，按照ARP消息格式对捕获的ARP消息进行分析。1个16进制数字代表半个字节，每组8个数字刚好对应ARP格式中一行，然后按照ARP消息格式中行顺序来分析数据含义。
+
+如图\ref{fig:arp}所示就是在实验中我捕获的ARP消息：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{image/arp}
+	\caption{ARP消息}
+	\label{fig:arp}
+\end{figure}
+
+
+
+(1)	ARP请求消息。第一个封装消息：
+
+第一行,Hardware Address Type = 0x0001,表示釆用了以太网网络地址类型；Protocol Address Type= 0x0800,表示釆用了 IP协议地址类型。
+
+第二行，Haddr Len = 0x06,表示以太网物理地址长度是6个字节，48位长；Paddr Len = 0x04,表示IP地址长度是4个字节，32位长；0peration = 0x0001,表示是ARP请求消息。
+
+第三行+第四行上半行,Sender Haddr = 0x402c f4cd 7474,表示源节点硬件物理地址，共有48位。
+
+第四行下半行+第五行上半行.Sender Paddr = 0xc0a8 Olfe,表示源节点IP地址，折算成 十进制就是192. 168. 1.254。
+
+第五行下半行+第六行.Target Haddr=0x0800 2754 122d,表示需要解析的目的节点硬 件物理地址，理论上应为0。
+
+第七行,Target Paddr=0xc0a8 0113,表示目标节点IP地址，折算成十进制就是192.168.1.19。
+
+(2)	ARP响应消息。第二个封装消息：
+
+第一行，Hardware Address Type = 0x0001,表示釆用了以太网地址类型；Protocol
+Address Type=OxO8OO,表示采用了 IP协议地址类型。
+
+第二行,Haddr Len=0x06,表示物理地址长度是6个字节，48位长；Paddr Len=0x04,表 示IP协议地址长度是4个字节，32位长)0peration=0x0002,表示是ARP响应消息。
+
+第三行+第四行上半行,Sender Haddr = 0x0x0800 2754 122d,表示源节点硬件物理地址，共有48位，就是解析得到硬件物理地址。
+
+第四行下半行+第五行上半行.Sender Paddr=0xc0a8 0113,表示源节点IP地址，折算成十进制就是192. 168. 1. 19.
+
+第五行下半行+第六行-Target Haddr=0x402c f4cd 7474,表示目的节点硬件物理地址。 第七行，Target Paddr = 0xc0a8 Olfe,表示目的节点协议地址，折算成十进制就是 192. 168. 1. 254,ARP请求者IP地址。
+
+
 \subsection{实验小结}
+在这个实验里我掌握了ARP消息结构，对ARP解析原理的理解也加深了。
+
+抓包实验非常简单，只要跟着老师的教材一步步做就不会出现问题。
+
+在实验中遇到的主要问题是，开启了抓包监听之后在控制台还会源源不断的输出其他数据包的内容干扰，所以监听必须指定想要的数据包格式，过滤掉不想要的数据包格式，以免干扰分析，在已经抓取到了想要分析的数据包之后，可以按ctrl+c停止监听，防止后续源源不断出现的抓包记录干扰分析。
+
+还要注意的一点是下面的16进制数字不包含帧头部，帧头部的信息（包括源MAC，目标MAC和类型）出现在第一行中。
+
 \section{IP数据包分析实验}
 \subsection{实验目的}
+
+IP协议是TCP/IP模型的核心协议，IP数据包是网际网上进行传输的网络数据包，所有的传输与处理都围绕IP数据包展开，因此，了解IP数据包格式，理解每一个数据域含义，对于 网际网的传输机制理解至关重要。本实验将借助Tcpdump工具，捕获和分析IP数据包。
+
+(1)	了解IP数据包格式以及各个数据域含义。
+
+(2)	了解IP数据包传输原理。
+
 \subsection{实验设备}
-\subsection{实验网络拓扑}
+
+一台安装了Ubuntu16.04虚拟机的计算机。
+
 \subsection{实验内容}
+(1)设置好实验环境
+
+输入捕获IP数据包监听命令:sudo tcpdump - ex - i enp0s3 ip 口令：123456789,处于监听状态。
+
+(2)触发产生IP数据包。创建终端2,向Windows节点发出ICMP消息。
+
+输入“ping 192. 168. 1. 254”。
+
+(3)	分析捕获IP数据包。终端1,捕获了一个IP数据包，如图\ref{fig:ip}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{image/ip}
+	\caption{捕获了的IP数据包}
+	\label{fig:ip}
+\end{figure}
+
+
+IP数据包头部格式，如图\ref{fig:screenshot049}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\linewidth]{image/screenshot049}
+	\caption{IP数据包头部格式}
+	\label{fig:screenshot049}
+\end{figure}
+
+分成五行，每行对应两组数字，共计20个字节，按照IP数据包格式对IP数据包进行分 析。1个数字代表半个字节，每组8个数字刚好对应IP数据包格式中一行,特意用 矩形框分隔,下面按照格式中行顺序来分析数据含义。
+
+第一行，version=0x4,标识IP版本号，表示第四版IP;h. len=0x5,表示IP头部长度为5 行，每行长32位，总计20字节；Service Type=0x00,空缺；Total Length= 0x54,表示IP数据 包总长度，当前为84个字节。
+
+第二行，分段数据，不讨论。
+
+第三行，T TL=0x80,表示生存时间，折合成十进制为128；type = 0x01,表示封装的上层 协议，1表示ICMP协议；Header checksum=0x4e99,表示IP数据包头部的校验和补码。 
+
+第四行，源地址= 0xc0a8 Olfe,表示源节点IP地址，折合成十进制是192. 168. 1. 254
+
+第五行，目标地址=0xc0a8 0113,表示目标节点IP地址，折合成十进制是192.168. 1.19
+
+
 \subsection{实验小结}
+
+在这个实验里我掌握了IP数据包头部结构以及各个数据域含义，对IP数据包传输原理的理解也加深了。
+
+和上个实验一样，抓包实验非常简单，只要跟着老师的教材一步步做就不会出现问题。
+
+在实验中遇到的主要问题是，开启了抓包监听之后在控制台还会源源不断的输出其他数据包的内容干扰，所以监听必须指定想要的数据包格式，过滤掉不想要的数据包格式，以免干扰分析，在已经抓取到了想要分析的数据包之后，可以按ctrl+c停止监听，防止后续源源不断出现的抓包记录干扰分析。
+
+还要注意的一点是下面的16进制数字不包含帧头部，帧头部的信息（包括源MAC，目标MAC和类型）出现在第一行中。
+
 \section{UDP用户数据报分析实验}
 \subsection{实验目的}
+
+UDP协议是非常重要的传输层协议,人们常用的即时工具软件就是使用UDP作为传输 层协议，UDP用户数据包格式非常简单，了解UDP用户数据包有利于帮助理解传输层作用。 本实验将借助Tcpdump,捕获和分析UDP用户数据包。
+
+（1）	理解传输层作用。
+
+（2）	了解UDP用户数据包结构。
+
 \subsection{实验设备}
-\subsection{实验网络拓扑}
+一台安装了Ubuntu16.04虚拟机的计算机。
+
 \subsection{实验内容}
+
+首先按照要求设置好实验环境。
+
+(1)创建终端1,启动抓包监听，以便在网络上捕获UDP用户数据包，“应用程序”->“附
+件”->“终端”
+
+监听 UDP 端口 5555: sudo tcpdump-xp-i enp0s3 udp and port 5555 口令J23456789,处于监听状态。
+
+(2)产生UDP用户数据包。创建终端2,使用Linux命令方式向Windows节点 UDP5555端口发送字符串，以触发UDP用户数据包，如图7-21所示。
+
+输入“echo networklab>/dev/udp/l92. 168. 1. 254/5555",将字符串重定向到 Windows 主机的UDP5555端口。
+
+(3)分析捕获UDP数据包。终端1,捕获了封装UDP用户数据包的IP数据包，如图\ref{fig:udp}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{image/udp}
+	\caption{实验中捕获的udp数据包}
+	\label{fig:udp}
+\end{figure}
+
+图中后半部分是udp数据包，前面是IP数据包头部，共20个字节，其中，IP数据包头部中的第三组数标识IP包被封装的上层协议，对应IP数 据包头部格式第三行前半行,TTL=0x40,表示生存时间，折算成十进制是64；type = 0x11,标 识封装类型，折算成十进制17,表示上层协议是UDP协议。
+
+图中UDP用户数据包头部分成两行,其余是UDP用户数据包数据体，即应用程序 数据。图中1个数字代表半个字节，每组8个数字刚好对应UDP用户数据包格式中一 行，然后就是按照格式中行顺序来分析数据含义。
+
+第一行，UDP SOURCE PORT=0xal09,表示源端口号；UDP DESTINATION PORT = 0X15b3,表示目标端口号，折算成十进制为5555。
+
+第二行,UDP MESSAGE LENGTH = 0xl3,表示UDP用户数据包长度，19个字节长，8 个字节头部，11个字节数据；UDP CHECKSUM = 0x8486,表示UDP用户数据包校验和。
+
+第三行+第四行+第五行，代表UDP数据体，0x6e65 7477 6f72 6b6c 6162,按照ASCII  
+编码就是发送的字符串"networklab”； OxOa,则代表ASCII编码换行，刚好是11个字节。
+
+
 \subsection{实验小结}
+
+通过这一节的实验，我深刻的理解了传输层作用。加深了对UDP用户数据包结构的印象。
+
+与前面两个抓包实验不同，这一节我们不是发送ARP消息，也不是用ping命令发送ICMP消息，而是手动发送了一个udp消息并写入了自定义的消息内容。
+
+和前面的实验一样的是，抓包实验非常简单，只要跟着老师的教材一步步做就不会出现问题。
+
+在实验中遇到的主要问题是，开启了抓包监听之后在控制台还会源源不断的输出其他数据包的内容干扰，所以监听必须指定想要的数据包格式，过滤掉不想要的数据包格式，以免干扰分析，在已经抓取到了想要分析的数据包之后，可以按ctrl+c停止监听，防止后续源源不断出现的抓包记录干扰分析。
+
+还要注意的一点是下面的16进制数字不包含帧头部，帧头部的信息（包括源MAC，目标MAC和类型）出现在第一行中。
+
 \section{NAT网络地址转换实验}
 \subsection{实验目的}
 \subsection{实验设备}
