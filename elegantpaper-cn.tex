@@ -17,7 +17,7 @@
 \usepackage{array}
 \newcommand{\ccr}[1]{\makecell{{\color{#1}\rule{1cm}{1cm}}}}
 \usepackage{fancyhdr} %调用宏包
-
+\usepackage{subfigure}
 % ---基本设置---
 
 %设定页面的页眉页脚类型，$\LaTeX$内置了四种：empty、plain、headings及myheadings，但是我们现在不用这些内置的样式。
@@ -1377,27 +1377,295 @@ router01(config-router)# network 202.168.2.0 0.0.0.255 area 0
 \subsection{实验网络拓扑}
 
 
+实验网络拓扑如图\ref{fig:screenshot025}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot025}
+	\caption{帧中继实验网络拓扑}
+	\label{fig:screenshot025}
+\end{figure}
+
 
 \subsection{实验内容}
+
+\begin{lstlisting}
+1. 帧中继交换机配置
+1.1路由器设置成帧中继交换机
+--进入全局配置模式: router03#config t
+--启用作为帧中继交换机：router03(config)#frame switching
+--查看帧中继功能：router03#sh run
+1.2 设置s0/0端口
+--查看端口物理连接：router03#sh control s0/0#检查端口s0/0, s0/1，物理线是否连接，
+--设置端口：router03 (config)#in s0/0#端口s0/0
+--封装端口为Frame：router03 (config-if)#encap   frame#enacapsulation frame-relay 
+--帧封装方式：router03 (config-if)#fram intf-type dce 
+--设置lmi类型：router03 (config-if)#fram lmi-type cisco 
+--时钟频率：router03 (config-if)#clock rate 56000
+--配置广域路由(pvc)：router(config-if)#fram route 200 inter s0/1 100
+--启动端口：router03 (config-if)#no shut
+router03 (config-if)# exit
+1.3设置s0/1端口：
+--设置端口：router03 (config)#in s0/1#端口s0/1
+--封装端口为Frame：router03 (config-if)#encap   frame#enacapsulation frame-relay 
+--配置端口类型DCE：router03 (config-if)#fram intf-type dce 
+--设置lmi类型：router03 (config-if)#fram lmi-type cisco 
+--时钟频率：router03 (config-if)#clock rate 56000
+--配置广域路由(pvc)：router03 (config-if)#fram route 100 inter s0/0 200
+1.4 检查帧中继交换机
+--查看配置：router03#sh run
+--查看交换机路由表，即pvc构成：router03#sh frame route
+\end{lstlisting}
+
+\begin{table}[htbp]
+
+\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline IN\_Port & IN\_DLCl & OUT\_Port & OUT\_DLCl \\
+	\hline $\mathrm{S} 0 / 0$ & 200 & $\mathrm{~S} 0 / 1$ & 100 \\
+	\hline $\mathrm{S} 0 / 1$ & 100 & $\mathrm{~S} 0 / 0$ & 200 \\
+	\hline
+\end{tabular}
+\caption{查看交换机路由表，即pvc构成}
+\end{table}
+\begin{lstlisting}
+--查看pvc使用情况：router03#sh frame pvc#端口类型DCE，DLCI用途是Switching，激活状态
+2 路由器router01配置
+2.1配置快速以太网f0/0
+--进入配置模式：router01#config t
+--进入以太口：router01(config)#in f0/0
+--删除旧IP地址： router01(config-if)#no ip address <ipaddress><subnet mask>
+--添加IP地址： router01(config-if)#ip address <ipaddress><subnet mask>
+--开启端口功能：router01(config-if)#no shut
+2.2 配置帧中继广域网链路
+--查看pvc链路号：router01#sh frame pvc#看不到
+--设置端口：router01(config)#in s0/0#端口s0/0
+--封装端口为Frame：router01(config-if)#encap  frame#线路才启用； 
+--查看并记录DLCI编号：router01#sh frame pvc
+--设置lmi类型：router01(config-if)#fram lmi-type cisco 
+--设置IP地址：router01(config)#ip addr 202.168.2.1 255.255.255.0 
+--启动端口：router01(config-if)#no shut
+2.3 地址映射管理
+--查看DLCI同IP地址映射状态：router01#sh frame map#已经映射就不用设立；
+2.4 静态路由配置
+--添加缺省路由： router01(config)#ip route 0.0.0.0 0.0.0.0 202.168.2.2 # 对端广域端口地址；
+--或添加静态路由： router01(config)#ip route 192.168.y.0 255.255.255.0 202.168.2.2 
+--查看路由表：router01# sh ip route
+2.5 测试
+--配置计算机IP地址：192.168.x.254
+--测试连通(从计算机)：ping 192.168.y.254# 对端计算机
+2.6 静态建立帧中继映射
+--关闭动态反向地址解析：router01(config)#int s0/0#指定端口
+router01(config-if)#no fram inverse
+router01(config-if)#shut#重启端口
+router01(config-if)#no shut
+--查看DLCI同IP地址映射状态：router01#sh frame map#不存在映射
+--建立映射DLCI：router01(config-if)#fram map ip 202.168.2.2 200#对端地址 
+2.7 重新测试
+--配置计算机IP地址：192.168.x.254
+--测试连通(从计算机)：ping 192.168.y.254# 对端计算机
+
+\end{lstlisting}
+
 \subsection{实验小结}
+
+这个实验遇到的主要问题还是实验设备的问题！串口容易坏或者接触不良！两个路由器的两个串口灯都是亮的，但是并不通，得用手去按紧了才通。
+
+这个实验本身还是比较复杂的，在做实验的时候也做了很久才做出来。我本来还想再cisco packet tracer上重现这个实验加深一下印象，但是在执行frame switching的命令的时候找不到frame命令，后来一查才知道cisco packet tracer不支持这个命令。
+
+做了这个实验之后更加深入的理解了帧中继技术，也更加掌握了其路由表的建立的机制。
+
 \section{组播实验}
 \subsection{实验目的}
+
+组播是一对多的传输模式，即一个节点向组播地址发送一个IP数据包，所有该组播的成员 都将接收这个IP数据包，具有较高传输效率。组播应用非常广泛,视频会议就是组播的典型应 用,正确使用组播对于提高网络传输效率非常有价值。但组播不会自动跨域子网，需要对路由器 进行适当设置。实验模仿两个远程子网的互联，两个子网各接一个路由器，路由器之间用远程网 络相连，安排一个组播发送节点和两个组播接收节点，配置路由器使得组播能跨越子网。
+
+（1）了解组播协议基本原理。
+
+（2）掌握路由器组播配置技能。
+
 \subsection{实验设备}
+
+实验环境主要由两台路由器、三台计算机和两台交换机组成。使用单根串行交叉线将路 由器A同路由器B的串口对接起来，模拟远程传输网络；将路由器A以太网端口和主机 Host1用网线直接连接到一个交换机Switch1；将路由器B以太网端口和主机Host2和Host3 用网线直接连接到另一个交换机Switch2；按图4-54通过串行线将主机Hostl和Host2串口 com同路由器console 口连接起来，使用超级终端充当路由器管理的操作平台。运行组播测试工具软件用于组播测试。
+
 \subsection{实验网络拓扑}
+
+实验网络拓扑如图\ref{fig:screenshot026}所示
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot026}
+	\caption{实验网络拓扑}
+	\label{fig:screenshot026}
+\end{figure}
+
 \subsection{实验内容}
+
+\begin{lstlisting}
+1.连接路由器
+--打开路由器电源
+--使用console线将计算机串口com1与路由器console口直接相连；
+--建立HyperTerminal：开始程序附件通讯超级终端名称=router连接=com1Baut Rate=9600,8,no parity, 1 stop bit；
+--进入特权模式：router01>en(able) ，Enable Secret Password=cisco
+2查看端口状态：
+--记录以太0/0口IP地址：router01# sh interface fast 0/0
+--记录串口0/0口IP地址：router01# sh interface ser 0/0
+3配置快速以太f0/0
+--进入配置模式：router01#config t
+--进入以太口：router01(config)#in f0/0
+--删除旧IP地址： router01(config-if)#no ip address <ipaddress><subnet mask>
+--添加IP地址： router01(config-if)#ip address <ipaddress><subnet mask>
+--开启端口功能：router01(config-if)#no shut
+--开启端口功能：router01(config-if)#no shut
+4配置串口s0/0
+--退到配置模式：router01(config-if)#exit
+--进入串口：router01(config)#in s0/0
+--设置新IP地址
+5 静态路由
+5.1添加对端路由： router01(config)#ip route 192.168.y.0 255.255.255.0 202.168.1.z # 对端网络地址和广域端口地址；
+5.2查看路由表：router01# sh ip route
+5.3 测试组播不成功
+--配置计算机IP地址：McastSend.exe
+--测试连通(从计算机)：MCastReiver.exe# 对端计算机
+6 配置组播
+6.1开启组播功能： router01(config)#ip multicast-routing 
+6.2配置串口组播方式： router01(config)#int s0/0/0 # 对端网络地址和广域端口地址；
+router01(config-if)#ip pim dense-mode # 
+6.3配置以他口组播方式：router01(config)#int  f0/0 # 对端网络地址和广域端口地址；
+router01(config-if)#ip pim dense-mode # 
+6.4查看组播：router01# sh ip mroute
+router01# sh ip pim inyter
+router01# sh ip pim nei
+
+--测试连通(从计算机): 192.168.y.254# 对端计算机
+7查看运行配置：router01# sh running config
+
+\end{lstlisting}
+
+实验截图如下图\ref{fig:screenshot027}：
+
+
+\begin{figure}[htbp]
+	\centering
+	\subfigure[组播测试发送端]{\includegraphics[height=0.4\linewidth]{image/screenshot027}}
+	\subfigure[组播测试接收端]{\includegraphics[height=0.4\linewidth]{image/screenshot028}}
+	\caption{组播测试截图}
+	\label{fig:screenshot027}
+\end{figure}
+
+
+
 \subsection{实验小结}
+
+
+
+这个实验遇到的主要问题还是出现在设备上，在前面的几次基础实验的成功经验下才排除了错误。串口容易坏或者接触不良！两个路由器的两个串口灯都是亮的，但是并不通，得用手去按紧了才通。
+
+实验中使用命令 netsh interface ipv4 show join 查看组播是否运行在了正确的网卡上！最好在适配器设置里将无关的网卡禁用以提高成功率。
+
+本次实验中的路由配置不一定是静态路由，也可以选用RIP或者OSPF动态路由，IP地址分配也可以是DHCP分配，只不过要自己去查看分配到的IP地址，只要保证两个字网可以互相连通就可以了。在保证上述前提下，软件程序运行在正确的网卡的前提下，实验做成功还是比较容易的。
+
 \section{动态IP地址分配DHCP实验}
 \subsection{实验目的}
+
+IP地址在人工配置中极易造成重复，从而发生冲突,动态主机配置协议(Dynamic Host Configuration Protocol,DHCP),将自动为子网内的节点向卡分配IP地址。DHCP可以简化网络地址配置，适合非专业人员使用，目前很多网络设备都具备DHCP服务功能，如家庭无线猫也使用DHCP。实验通过开启路由器的DHCP功能，对连接同一个交换机的主机开展动态地址分配。
+
+(1)	深入了解动态主机配置协议原理。
+
+(2)	了解和掌握DHCP服务的配置步骤。
+
 \subsection{实验设备}
+
+实验设备主要由一台路由器、两台计算机和一台交换机组成。路由器将担当DHCP服务器;将路由器以太网端口和两台计算机网卡都用网线直接连接到交换机，由交换机担当网络连 接;通过串行线将计算机Hostl串口 com同路由器console口连接起来，使用超级终端作为路由器管理的操作平台，两台计算机都作为地址分配实验主机。假如没有路由器和交换机设备，也可以用家用无线路由器来代替。
+
 \subsection{实验网络拓扑}
+
+
+拓扑图如图\ref{fig:DHCP}所示
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot014}
+	\caption{DHCP实验网络拓扑}
+	\label{fig:DHCP}
+\end{figure}
+
 \subsection{实验内容}
+按照实验环境要求，完成实验拓扑结构连接，并打开相关设备电源。
+
+(1)配置RouterA的DHCP服务。使用超级终端，进行网关设置和DHCP服务配置。
+
+1.进入配置模式。
+
+进入特权模式:routerA>en, Enable Secret Password= cisco
+
+进入配置模式:routerA>config t
+
+2.网关设置。
+
+进入以太网端口配置模式:routerA(config) \# in g0/0
+
+设置 IP 地址：routerA(config-if) \# ip address 192. 168. 1. 1 255. 255. 255. 0
+
+开启端口 ： routerA(config-if) \# no shut
+
+退出端口配置模式,使端口配置生效：routerA(config-if) \# exit
+
+3.配置DHCP服务。
+
+进入 DHCP 服务配置模式:routerA(config) \# ip dhcp pool mydhcp
+
+设置待可分配网络地址:routerA (dhcp-config) \# network 192. 168. 1. 0 255. 255. 255. 0
+
+域名设置：routerA (dhcp-config) \# domain-name networklab. com
+
+默认网关地址分配设置:routerA(dhcp-config) \# default-router 192. 168. 1. 1
+
+本地 DNS 服务器地址分配设置：routerA(dhcp-config) \# dns-server 202. 120. 190. 208
+
+设置租期：routerA(dhcp-config) \# lease infinite
+
+设置不参与分配地址:routerA(config) \# ip dhcp excluded-address 192.168. 1.1 192. 168.1. 7关闭DHCP冲突日志，以免显示影响操作:routerA(config) \# no ip dhcp conflict logging 启动 DHCP服务：routerA(config) \# service dhcp
+
+退出配置模式，使配置生效:routerA(config)\# exit
+
+(2)配置Hostl网卡地址自动分配设置。
+
+1.设置主机Hosl网卡IP地址自动获取，选择"Internet协议版本4”->“属性”。 选择“自动获得IP地址”和“自动获得DNS服务器地址”->“确定”。
+
+2.査看主机Hostl的IP地址分配状态。打开命令行窗口。 释放分配地址:ipconfig /release
+
+重新申请分配:ipconfig /renew
+
+查看已分配的主机Hostl网卡IP地址:ipconfig /all, IP地址得到了分配，地址为192. 168.1.21,子网掩码为255. 255. 255.0,默认网关地址为192. 168. 1. 1,本地DNS服务器地址 为202. 120. 190. 208,对照配置，完全一致。 
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot029}
+	\caption{查看主机IP地址分配}
+	\label{fig:screenshot029}
+\end{figure}
+
 \subsection{实验小结}
+
+DHCP实验是非常简单的实验了，在实验过程中没有遇到问题，在做过DHCP动态IP地址分配协议实验之后对DHCP有了更深的理解，知道家里用的家用路由器是怎么分配IP地址的了。
+
 \section{ACL访问控制实验}
 \subsection{实验目的}
+
+包过滤机制是路由器基本处理机制，加入过滤规则，可以实施基本的网络安全控制。阻隔 访问敏感网站和关键主机，均可以使用访问控制列表作为过滤规则实施。学习访问控制列表, 不但可以了解基本网络安全知识，而且还可以提高路由器使用水平。本实验利用路由器的访 问控制列表功能，使得特定的IP地址不能访问，实现网络安全管理任务。
+
+(1)	了解路由器包过滤基本原理。
+
+(2)	了解访问控制列表实施原理。
+
+(3)	利用控制列表实施网络安全。
+
 \subsection{实验设备}
 \subsection{实验网络拓扑}
 \subsection{实验内容}
 \subsection{实验小结}
+
+我们都知道我国的防火长城就是由ACL访问控制列表来实现的，所以访问在ACL访问控制列表中的站点的时候需要使用代理服务器。通过这次实验我加深了对访问控制的具体流程的理解，对计算机网络也更感兴趣了。
 \section{邮件收发实验}
 \subsection{实验目的}
 \subsection{实验设备}
