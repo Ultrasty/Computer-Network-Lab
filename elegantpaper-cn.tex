@@ -2411,11 +2411,22 @@ FatTree构建拓扑规则如下：FatTree拓扑中包含的Pod数目为$k$，每
 
 Bcube构建拓扑规则如下：$BCube_0$只是连接到$n$ 端口交换机的$n$ 个服务器。一个$BCube_1$由$n$ 个$BCube_0$ 与$n$ 个$n$ 端口交换机构成。以此类推，$BCube_k$$(k\geq1)$由$n$ 个$BCube_{k-1}$ 和$n^k$ 个$n$ 端口交换机构成。$BCube_k$中的每个服务器都有$k + 1$ 个端口，并从$0$ 级到$k$ 级编号。由此可知，$BCube_k$ 有$N = n^k +1$ 个服务器和$k + 1$ 级交换机，每个级别都有$n^k$ 个$n$ 端口交换机，当$n=4,k=1$时，拓扑结构如图\ref{fig:screenshot051}所示。
 
-\subsubsection{实验比较}
+\subsubsection{实验过程}
 
 为了公平地比较两种体系结构的大小，网络设备和协议的配置以及流量生成量必须保持一致。 唯一应更改的变量是网络拓扑。 表I显示了用于Fat-tree和BCube体系结构的性能模型的仿真设置。因为Fat-tree是三层结构，为了控制变量，Bcube的k参数设为2，也即Bcube也是三层结构，通过水平扩展增加服务器数量。论文中路由协议选用的是Nix-Vector routing protocol，在NS3中提供了ns3::Ipv4NixVectorHelper可以供调用。
 
 实验变量控制见表\ref{table:bianliang}
+
+其中，平均时延的计算方法为
+$$
+D_{\text {avg }}=\frac{1}{n} \sum_{i=1}^{n} d_{i}
+$$
+
+
+平均吞吐量的计算方法为
+$$
+\tau=\frac{\sum_{i=1}^{n}\left(p_{i} \times \delta_{i}\right)}{\sum_{i=1}^{n} d_{i}}
+$$
 
 \begin{table}[htbp]
 	\centering
@@ -2529,24 +2540,30 @@ int delay = 0.001;		// 0.001 ms
 std::cout << "Number of BCube level =  " << k + 1 << "\n";
 std::cout << "Number of switch in each BCube level =  " << num_sw << "\n";
 std::cout << "Number of host under each switch =  " << n << "\n";
-std::cout << "Total number of host =  " << num_host << "\n"; 
+std::cout << "Total number of host =  " << num_host << "\n";
+ 
 InternetStackHelper internet;
 Ipv4NixVectorHelper nixRouting;
 Ipv4StaticRoutingHelper staticRouting;
 Ipv4ListRoutingHelper list;
 list.Add(staticRouting, 0);
 list.Add(nixRouting, 10);
-internet.SetRoutingHelper(list); 
-//创建Node Containers 
+internet.SetRoutingHelper(list);
+ 
+//创建Node Containers
+ 
 NodeContainer host;				// NodeContainer for hosts;  				
 host.Create(num_host);
-internet.Install(host); 
+internet.Install(host);
+ 
 NodeContainer swB0;				// NodeContainer for B0 switches 
 swB0.Create(num_sw);
-internet.Install(swB0); 
+internet.Install(swB0);
+ 
 NodeContainer bridgeB0;			// NodeContainer for B0 bridges
 bridgeB0.Create(num_sw);
-internet.Install(bridgeB0); 
+internet.Install(bridgeB0);
+ 
 NodeContainer swB1;				// NodeContainer for B1 switches
 swB1.Create(num_sw);
 internet.Install(swB1);
@@ -2782,7 +2799,7 @@ return 0;
 \end{lstlisting}
 
 
-fat-tree.cc如下：
+Fat-tree.cc如下：
 
 \begin{lstlisting}
 #include <iostream>
@@ -3092,6 +3109,58 @@ return 0;
 
 \end{lstlisting}
 
+\subsubsection{实验结果}
+
+实验结果是我们通过代码得出的统计数据，见图\ref{fig:screenshot052}，其中自变量是n/k，但我们研究是自变量是服务器的数量，它和n/k有函数关系，因变量是接收/发送包的数量，总时延、平均时延、丢包量、丢包率、平均吞吐量，平均时延等，我们主要关注的变量是平均吞吐量、平均时延和丢包数量。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\linewidth]{image/screenshot052}
+	\caption{实验结果统计表}
+	\label{fig:screenshot052}
+\end{figure}
+
+将统计数据统计为图表之后可以更清楚的看见结果，见图\ref{fig:result}
+
+在图中，我们可以清楚看到比较的结果，使用Bcube结构的平均时延比Fat-tree的平均时延要小，Bcube结构的平均吞吐量比Fat-tree要大，在丢包数量上Bcube比Fat-tree要多，但和数据包总量比起来两者丢包率都很小，可以忽略不计。
+
+\begin{figure}[htbp]
+	\centering
+	\subfigure[平均时延]{\includegraphics[width=0.32\linewidth]{image/screenshot053}}
+	\subfigure[平均吞吐量]{\includegraphics[width=0.32\linewidth]{image/screenshot054}}
+	\subfigure[丢包数量]{\includegraphics[width=0.32\linewidth]{image/screenshot055}}
+	\caption{实验结果图表}
+	\label{fig:result}
+\end{figure}
+
+同时我们也对实验中的过程进行了一部分可视化，下图\ref{fig:NetAnim}展示的是Fat-tree中k=4时的情形。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/screenshot056}
+	\caption{NetAnim使用示例}
+	\label{fig:NetAnim}
+\end{figure}
+
+\subsubsection{实验比较}
+
+图\ref{fig:screenshot057}和图\ref{fig:screenshot058}分别是原文中的平均吞吐量和平均时延，从图中可以看出，我们还原的实验的实验数据和原论文中的实验数据基本一致，实验再现非常成功。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/img2.jpg}
+	\caption{原文中的平均吞吐量}
+	\label{fig:screenshot057}
+\end{figure}
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{image/img1.jpg}
+	\caption{原文中的平均时延}
+	\label{fig:screenshot058}
+\end{figure}
+
 
 
 \subsection{实验小结}
@@ -3102,4 +3171,123 @@ return 0;
 
 \section{个人文献阅读}
 
+我选择的论文是Towards Reproducible Performance Studies Of Datacenter Network Architectures Using An Open-Source Simulation Approach，也就是“使用开源仿真方法进行数据中心网络体系结构的可再现性能研究”，这是一篇顶会论文，发表在2013 IEEE Global Communications Conference (GLOBECOM)上。
+\subsection{论文介绍}
+
+论文所研究的内容是和数据中心相关的，论文主要探讨了两个方面的内容，第一部分是利用NS3平台进行了仿真实验，比较了Bcube和Fat-tree两种体系结构的性能，第二个部分利用NS3仿真再现了在硬件实验上的结果，通过作者的仿真框架研究文献中现有性能模型的可再现性。由于仿真框架尚处于起步阶段，因此作者尝试首先重现已有文献资料中Fat tree的性能结果。已有文献中的性能测试是基于硬件测试平台的。在NS3上再现性能测试结果可以证明NS3的仿真性能，可以实现性能可重复性研究。
+
+\subsection{数据中心网络（DCN）的当前研究趋势}
+
+数据中心网络是指数据中心内部通过高速链路和交
+换机连接大量服务器的网络。其主要设计以优化成本
+和性能为目标，要求网络具有高带宽、高可扩展性、高
+容错性、低延迟、低开销的特性，这使得数据中心网络
+拓扑构成为一个关键的设计元素。
+
+在数据中心网络（DCN）研究中，一项关键挑战是以一种无偏且透明的方式再现不同可扩展DCN架构的相对性能。如果能充分解决DCN架构的性能可复现性研究问题，将对性能研究带来巨大的帮助，给从事数据中心架构的人节省很大的决策成本，这对于建立强大的研究基础和做出明智的数据中心投资决策至关重要。在2013年作者写这篇论文的时候，各种数据中心架构的现有性能结果似乎并不是无偏的和透明的，因为它们大多数用的是闭源的模拟器或者临时开发的软件，无法为研究团体所用。而如果企业管理者投资必要的硬件来构建计算机集群以进行手动再现性能结果将花费高昂的金钱和管理成本。
+
+\subsection{数据中心网络的流量特点}
+
+数据中心网络中，数据流量主要是服务器间的流量，
+东西向流量要多于南北向流量，主要有一对一、一对多、
+多对一和多对多等集群通信方式。由于数据中心网络
+提供了诸如Web 应用，网络硬盘、搜索引擎、集群计算
+等诸多应用服务，所以需要数据中心网络在极短的时间
+内处理大量的分布式计算和数据传输任务，对网络的性
+能提出了更高的要求。由于多用户需要共享数据中心网
+络中的计算、存储和带宽等资源这一特性，因此数据中
+心网络如何选用合理的拓扑结构从而高效调度网络资源
+也成为当今的研究热点。
+
+\subsection{DCN基础架构}
+
+常见的数据中心网络的拓扑可分为三种：基于交换机的拓扑、基于服务器的拓扑、交换机与服务器混合的拓扑。在基于交换机的拓扑中，使用交换机进行包的转发；在基于服务器的拓扑中，使用服务器不仅执行应用服务，而且还负责服务器间包的转发；而在交换机和服务器混合的拓扑中，交换机和服务器同时参与包的转发。常见的基于交换机的拓扑如：多层网络，Fat tree，VL2，Portland等。基于服务器的拓扑如：Camcube。基于交换机和服务器的混合拓扑有：BCube。
+
+在阅读文献的过程中我学到的最多的内容就是Fat-tree和Bcube的架构，这个架构虽然简单，但还是蕴含了不少思想在其中的。在这里我就主要讲讲Fat-tree和Bcube两种数据中心网络的架构特点。
+
+1.Fat-tree架构
+
+传统的数据中心网络拓扑主要是采用层次架构实现
+的，自上而下通常分为核心层、汇聚层和接入层。多层
+网络作为传统的网络拓扑结构常用于企业的数据中心。
+典型的三层拓扑结构包括根级别的核心交换机，中间层
+的汇聚交换机，和连接到主机和服务器的接入交换机，
+采用树形结构相连接，网络中的链路使用以太网协议，
+服务器间为了减少广播和提高网络安全性，可以使用
+VLAN 将其划分不同的逻辑子网实现隔离。由于VLAN
+之间无法直接通信，需要通过三层交换机进行转发。通
+过二层交换技术生成树协议（STP）来管理拓扑，三层
+路由协议使用开放式最短路径优先协议（OSPF），可以
+提供等价多路径（ECMP）来实现负载均衡功能。层次
+树形网络拓扑结构简单，易于实现、管理和和扩展，多
+层网络对根节点的依赖过大，一旦根节点失效，将对网
+络性能造成很大的影响。
+
+针对上述的问题，Al-Fares 等人提出了一种Fat tree 的网络拓扑结构，Fat tree 主要通过互连一些低端廉价的交换机来代替多层网络拓扑中的高端交换机，因此多层网络中的汇聚层和接入层的交换机将被替换为一组互联的低端交换机替代。Fat tree 位于汇聚层和接入层的交换机被分为$K$ 个域（Pod），每个域中的交换设备实现上行和下行链接数目相等，$K$ 个核心交换机共$K^2$个端口分别连接$K$个域（Pod）。由于Fat tree 中每个域（Pod）有相等的上行和下行连接数目，因此Fat tree 有充分的对分带宽，另外由于拓扑中的域采用低端廉价的交换设备，因此该拓扑也是经济和高度可扩展的。
+
+FatTree构建拓扑规则如下：FatTree拓扑中包含的Pod数目为$k$，每一个pod连接的sever数目为$(k/2)^2$，每一个pod内的边缘交换机及聚合交换机数量均为$k/2$，核心交换机数量为$(k/2)^2$，网络中每一个交换机的端口数量为$k$，网络所能支持的服务器总数为$k^3/4$。当$k=4$时，拓扑结构如图\ref{fig:screenshot050}所示。
+
+
+2.Bcube架构
+
+BCube 是一种基于集装箱的模块化数据中心新型网络
+架构［10］。BCube 架构核心是以服务器为中心的网络结构，
+其中具有多个网络端口的服务器连接到多层COTS（商品
+货架式）小型交换机。BCube 采用BSR 路由协议提供高效的路由策略。
+BSR 可以充分利用BCube 的高网络容量，并自动均衡通信
+负载，同时具有良好的容错性能。BSR 将服务器分为起始
+服务器、中继服务器和目的服务器。其通过起始服务器
+控制路由路径，而不需要中继服务器的协调。中继服务器
+不需要路由，只需要根据报文头文件进行转发。起始服务
+器负责选取可达的最优路径，即最小剩余带宽最大的路
+径，若其相同时则选取最短路径。中继服务器向起始服
+务器返回错误信息，并报告各条路径的带宽信息，目的服
+务器返回含有路径中最小带宽的探测信息，从而一方面避
+免了全局路由状态播报，另一方面使BCube 具有动态均匀
+负载能力，且路由效率极高。
+
+Bcube构建拓扑规则如下：$BCube_0$只是连接到$n$ 端口交换机的$n$ 个服务器。一个$BCube_1$由$n$ 个$BCube_0$ 与$n$ 个$n$ 端口交换机构成。以此类推，$BCube_k$$(k\geq1)$由$n$ 个$BCube_{k-1}$ 和$n^k$ 个$n$ 端口交换机构成。$BCube_k$中的每个服务器都有$k + 1$ 个端口，并从$0$ 级到$k$ 级编号。由此可知，$BCube_k$ 有$N = n^k +1$ 个服务器和$k + 1$ 级交换机，每个级别都有$n^k$ 个$n$ 端口交换机，当$n=4,k=1$时，拓扑结构如图\ref{fig:screenshot051}所示。
+
+\subsection{论文中所做的工作}
+
+上面讲的是我在学习过程中学到的和数据中心有关的知识，作者就是为了解决上面提到的那些仿真难题而开发了这一模拟框架，这种科研精神值得敬佩。在该平台上可以开发DCN拓扑的性能模型，让性能研究具有可再现性。这个框架的优点包括：（1）成本低，（2）提供了已知DCN架构的透明性能基准，并且（3）能够无偏差地对DCN架构进行比较性能仿真，而无需从头开始开发现有DCN模型。
+
+作者论文中所做的工作，主要就是证明他所写的框架能行！原文的第三个部分是Bcube和Fat-tree性能比较的例子，而第四部分则证明了它能再现硬件实验结果。其中第三部分已经被我们的再现实验复现了，这里就不再赘述。本报告的第26节：NS3-自选型综合实验全文都是由我一人撰写，因此可以参照那个部分。
+
+在文中作者通过控制变量法仔细的比较了Bcube架构和Fat-tree架构的性能，虽然Bcube架构的拓扑结构在理论上本来就应当比Fat-tree性能更高，但是作者用数据来说话，清楚的展现了它们之间的性能差异。
+
+作者的更重要的工作是原文的第四个部分，也就是进行可复制的性能研究，比较的双方不再是Bcube架构和Fat-tree架构，而是Fat-tree架构在模拟器中的性能表现和在真实硬件上的性能表现之间的比较。
+\begin{table}[htbp]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline Number of pods $(k)$ & Hosts & Percentage of Ideal Bandwidth (1536 Mbps) & Average Packet Delay (ms) \\
+	\hline 4 & 16 & $12.4 \%$ (190 Mbps) & 0.043 \\
+	\hline 16 & 1024 & $11.5 \%$ (176 Mbps) & 0.048 \\
+	\hline 24 & 3456 & $11.2 \%$ (173 Mbps) & 0.050 \\
+	\hline
+\end{tabular}
+\caption{再现文献中描述的胖树性能模型的结果}
+\label{table:fatfattree}
+\end{table}
+
+表\ref{table:fatfattree}显示了如上所述的复制性能模型的结果。虽然复制模型和硬件测试平台中使用的网络设备，协议和应用程序在行为上和在质量上相似，但对于k = 4在16个节点的情况下，他们只能实现理想带宽的12.4％，而原文参考文献[7]作者报告的为53.4％。平均数据包延迟为0.043毫秒。所以可能文献中报告的结果很大程度上取决于硬件测试平台的绝对性能。但是，无需在布线和网络设备成本上进行大量投资，我们就可以基于模拟结果来了解Fat Tree的行为和保守性能。没有这项研究，就不会知道模拟结果与所报道的硬件实验有多近。随着他们将节点数量扩展到3,456，百分比值逐渐下降到理想带宽的11.2％，平均数据包延迟增加到0.050 ms。这种观察到的下降趋势与前面各节中提出的结果一致。作者的通用仿真框架能够以低成本切实地再现从中的硬件测试平台获得的性能结果，但也需要注意与实际硬件相关的性能差距。
+
+\subsection{结论}
+由于受到数据中心网络的服务器节点数量庞大、拓
+扑结构复杂及实验成本高等现实因素限制，目前大多仅停
+留在理论研究阶段。一般来说，科研人员经过研究提出
+的新数据中心网络及路由协议不会立即部署使用，在此之
+前，必须进行大量复杂的测试与分析工作，而如何更好地
+测试与验证新提出的数据中心网络，是一个亟待解决的难
+题。而NS3就是为解决这个难题而生的，它 在完
+备性、开源性、易扩展性等方面的特色使其优于现有大多
+数主流网络仿真软件。虽然它和现实的网络情况会有差距，但它已经在最大程度上尽量还原真实的网络情景，是非常优秀的开源网络模拟器。
+
+仿真是一种低成本的方法，因为仿真实验低成本，所以一般先有仿真实验再有硬件实验，而ns-3是当前最受欢迎的开源网络模拟器，所以有希望变得越来越完善。
+
+在大量的文献阅读中，我切实感受到了仿真的重要性，联系其他仿真软件，比如说机械、自动化控制领域常用的simulink仿真软件和SimMechanics等物理仿真软件，根据作者在论文中的仿真结果，网络仿真软件NS3似乎在保真度上和真实世界有一点小差距（simulink或是SimMechanics在物理系统仿真领域在一定时间内和真实世界拟合的很好），但是它已经是非常优秀的网络模拟器并且还在不停的发展。在文献阅读中我还学到的另一点便是严谨的科研精神，数据做出来是什么样的就是什么样的，它就反应了最真实 的实验结果。
+
+本次个人文献阅读中我还激发了对开源仿真软件的兴趣，有兴趣才有前进的动力，若以后仍有网络研究相关的工作，我也一定会继续深入学习NS3网络仿真工具。
+
+\section{附件-个人文献阅读的论文}
 \end{document}
